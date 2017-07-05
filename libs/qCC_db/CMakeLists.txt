@@ -11,6 +11,13 @@ project( QCC_DB_LIB )
 file( GLOB header_list *.h)
 file( GLOB source_list *.cpp)
 
+# renc 
+SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG	"${CMAKE_BINARY_DIR}/bin/Debug")
+SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release")
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG	"${CMAKE_BINARY_DIR}/bin/Debug" )
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release")
+
+
 add_library( ${PROJECT_NAME} SHARED ${header_list} ${source_list} )
 
 target_link_libraries( ${PROJECT_NAME} CC_CORE_LIB )

@@ -1,6 +1,7 @@
 #ifndef GRID_HEADER
 #define GRID_HEADER
 
+#define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS // renc 
 #ifndef WIN32
 #include <ext/hash_map>
 #define stdext __gnu_cxx

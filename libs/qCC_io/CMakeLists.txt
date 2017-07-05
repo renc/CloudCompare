@@ -24,6 +24,14 @@ if( ${OPTION_SUPPORT_MAC_PDMS_FORMAT} )
 endif()
 
 qt5_wrap_ui( generated_ui_list ${ui_list} )
+
+# renc 
+SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG	"${CMAKE_BINARY_DIR}/bin/Debug")
+SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release")
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG	"${CMAKE_BINARY_DIR}/bin/Debug" )
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release")
+
+
 add_library( ${PROJECT_NAME} SHARED ${header_list} ${source_list} ${generated_ui_list} )
 
 target_link_libraries( ${PROJECT_NAME} CC_CORE_LIB )

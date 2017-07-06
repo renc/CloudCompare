@@ -254,6 +254,7 @@ int main(int argc, char **argv)
 
 		//plugins are in bin/plugins
 		pluginPaths << (appPath + "/plugins");
+		pluginPaths << appPath;
 #elif defined(Q_OS_LINUX)
 		dirFilters << "*.so";
 

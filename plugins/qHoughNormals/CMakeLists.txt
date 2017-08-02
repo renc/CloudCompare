@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
 
+# renc 
+SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG	"${CMAKE_BINARY_DIR}/bin/Debug")
+SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release")
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG	"${CMAKE_BINARY_DIR}/bin/Debug" )
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release")
+
 option( INSTALL_QHOUGH_NORMALS_PLUGIN "Check to install qHoughNormals plugin" OFF )
 
 # CloudCompare 'Hough Normals' plugin (see https://github.com/aboulch/normals_Hough)

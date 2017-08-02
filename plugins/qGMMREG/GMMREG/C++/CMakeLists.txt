@@ -24,7 +24,8 @@ FIND_PACKAGE(VXL)
 IF(VXL_FOUND)
   INCLUDE(${VXL_CMAKE_DIR}/UseVXL.cmake)
 ENDIF(VXL_FOUND)
-
+include_directories(${CMAKE_SOURCE_DIR}/3rdLibraries/vxl/core) #renc 
+	
 # `UseVXL.cmake' will in turn include the file
 # `VXLConfig.cmake' from the top of the VXL build tree.  You
 # should look at this file to see what CMake variables are imported.
@@ -77,7 +78,19 @@ file(GLOB_RECURSE GMMREG_API_HDRS *.h)
 INCLUDE_DIRECTORIES( ${VXL_VNL_INCLUDE_DIR} )
 
 ADD_LIBRARY(${PROJECT_NAME} ${API_LIBRARY_TYPE} ${GMMREG_API_SRCS} ${GMMREG_API_HDRS})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} vnl_algo vnl vcl)
-IF(UNIX)
+#TARGET_LINK_LIBRARIES(${PROJECT_NAME} vnl_algo vnl vcl) #renc 
+target_link_libraries(${PROJECT_NAME} 
+		debug D:/Users/renc/Source/Repos/vxl_build/lib/Debug/vnl_algo.lib
+		debug D:/Users/renc/Source/Repos/vxl_build/lib/Debug/vnl.lib 
+		debug D:/Users/renc/Source/Repos/vxl_build/lib/Debug/vcl.lib 
+		debug D:/Users/renc/Source/Repos/vxl_build/lib/Debug/v3p_netlib.lib 
+		debug D:/Users/renc/Source/Repos/vxl_build/lib/Debug/vpl.lib 
+		optimized D:/Users/renc/Source/Repos/vxl_build/lib/Release/vnl_algo.lib 
+		optimized D:/Users/renc/Source/Repos/vxl_build/lib/Release/vnl.lib 
+		optimized D:/Users/renc/Source/Repos/vxl_build/lib/Release/vcl.lib  
+		optimized D:/Users/renc/Source/Repos/vxl_build/lib/Release/v3p_netlib.lib  
+		optimized D:/Users/renc/Source/Repos/vxl_build/lib/Release/vpl.lib  	
+	) #renc
+	IF(UNIX)
   TARGET_LINK_LIBRARIES(${PROJECT_NAME} m port_ini)
 ENDIF(UNIX)

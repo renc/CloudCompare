@@ -10,3 +10,6 @@
 [submodule "plugins/qPoissonRecon/PoissonRecon"]
 	path = plugins/qPoissonRecon/PoissonRecon
 	url = https://github.com/cloudcompare/PoissonRecon
+[submodule "3rdLibraries/vxl"]
+	path = 3rdLibraries/vxl
+	url = https://github.com/vxl/vxl.git

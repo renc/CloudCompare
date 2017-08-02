@@ -106,4 +106,7 @@ if( ${OPTION_BUILD_CCVIEWER} )
 	add_subdirectory( ccViewer )
 endif()
 
+# vxl is tool heavy
+#add_subdirectory( 3rdLibraries/vxl )
+
 cmake_policy(POP)

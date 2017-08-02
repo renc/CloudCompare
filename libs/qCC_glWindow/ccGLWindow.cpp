@@ -2467,7 +2467,7 @@ void ccGLWindow::drawForeground(CC_DRAW_CONTEXT& CONTEXT, RenderingParams& rende
 					{
 					case LOWER_LEFT_MESSAGE:
 					{
-						renderText(10, ll_currentHeight, it->message, m_font);
+						//renderText(10, ll_currentHeight, it->message, m_font);
 						int messageHeight = QFontMetrics(m_font).height();
 						ll_currentHeight -= (messageHeight * 5) / 4; //add a 25% margin
 					}

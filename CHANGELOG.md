@@ -23,6 +23,8 @@ v2.9.alpha - XX/XX/XXXX
 		- 3 algorithms are available: average, median and weighted average
 
 	* New interactor to change the default line width (via the 'hot zone' in the upper-left corner of 3D views)
+	
+	* When a picking operation is active, the ESC key will cancel it.
 
 - enhancements:
 
@@ -111,6 +113,9 @@ v2.9.alpha - XX/XX/XXXX
 		- Compression is done automatically when saving a cloud with the 'LAS 1.3 / 1.4' filter (QLAS_FWF_IO_PLUGIN)
 			(but it's not done when saving the entity as a BIN file)
 
+	* qEllipser dialog:
+		- option to export the image as a (potentially scaled) point cloud
+
 	* Other
 		- color scales are now listed in alphabetical order
 		- the DXF format can now be used to export point clouds (their size should be very limited!)
@@ -128,6 +133,9 @@ v2.9.alpha - XX/XX/XXXX
 	* the 'Edit > Sensors > Camera > Create' function was broken (input parameters were ignored)
 	* merging clouds with FWF data would duplicate the waveforms of the first one
 	* invalid lines in ASCII (text) files could be considered as a valid point with coordinates (0, 0, 0)
+	* Point-pair based alignment tool:
+		- extracting spheres on a cloud with Global Shift would create the sphere in the global coordinate system instead of the local one (i.e. the sphere was not visible)
+		- deleting a point would remove all the detected spheres
 
 v2.8.1 - 16/02/2017
 ----------------------

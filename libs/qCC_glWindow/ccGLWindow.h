@@ -35,8 +35,6 @@
 #ifdef CC_GL_WINDOW_USE_QWINDOW
 #include <QWindow>
 #include <QWidget>
-#else
-#include <QOpenGLWidget>
 #endif
 
 //system
@@ -1080,7 +1078,7 @@ protected: //other methods
 	void toggleAutoRefresh(bool state, int period_ms = 0);
 
 	//! Returns the (relative) depth value at a given pixel position
-	/** \Return the (relative) depth or 1.0 if none is defined
+	/** \return the (relative) depth or 1.0 if none is defined
 	**/
 	GLfloat getGLDepth(int x, int y, bool extendToNeighbors = false);
 

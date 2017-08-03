@@ -15,18 +15,13 @@
 //#                                                                        #
 //##########################################################################
 
-//CCLib
-#include <CCPlatform.h>
-
 //qCC
 #include "ccGLWindow.h"
-#include "ccGuiParameters.h"
 #include "ccRenderingTools.h"
 
 //qCC_db
 #include <ccHObjectCaster.h>
 #include <cc2DLabel.h>
-#include <ccGenericPointCloud.h>
 #include <ccSphere.h> //for the pivot symbol
 #include <ccPolyline.h>
 #include <ccPointCloud.h>
@@ -35,7 +30,6 @@
 #include <ccSubMesh.h>
 
 //CCFbo
-#include <ccShader.h>
 #include <ccGlFilter.h>
 #include <ccFrameBufferObject.h>
 
@@ -2697,7 +2691,7 @@ void ccGLWindow::updateConstellationCenterAndZoom(const ccBBox* aBox/*=0*/)
 
 	ccBBox zoomedBox;
 
-	//the user has provided a valid bouding box
+	//the user has provided a valid bounding box
 	if (aBox)
 	{
 		zoomedBox = (*aBox);
@@ -4674,6 +4668,7 @@ void ccGLWindow::startCPUBasedPointPicking(const PickingParameters& params)
 	int nearestElementIndex = -1;
 	double nearestElementSquareDist = -1.0;
 	CCVector3 nearestPoint(0, 0, 0);
+	static const unsigned MIN_POINTS_FOR_OCTREE_COMPUTATION = 128;
 
 	static ccGui::ParamStruct::ComputeOctreeForPicking autoComputeOctreeThisSession = ccGui::ParamStruct::ASK_USER;
 	bool autoComputeOctree = false;
@@ -4708,7 +4703,7 @@ void ccGLWindow::startCPUBasedPointPicking(const PickingParameters& params)
 				{
 					ccGenericPointCloud* cloud = static_cast<ccGenericPointCloud*>(ent);
 
-					if (firstCloudWithoutOctree && !cloud->getOctree())
+					if (firstCloudWithoutOctree && !cloud->getOctree() && cloud->size() > MIN_POINTS_FOR_OCTREE_COMPUTATION) //no need to use the octree for a few points!
 					{
 						//can we compute an octree for picking?
 						ccGui::ParamStruct::ComputeOctreeForPicking behavior = getDisplayParameters().autoComputeOctree;
@@ -4782,7 +4777,7 @@ void ccGLWindow::startCPUBasedPointPicking(const PickingParameters& params)
 						nearestSquareDist,
 						params.pickWidth,
 						params.pickHeight,
-						autoComputeOctree))
+						autoComputeOctree && cloud->size() > MIN_POINTS_FOR_OCTREE_COMPUTATION))
 					{
 						if (nearestElementIndex < 0 || (nearestPointIndex >= 0 && nearestSquareDist < nearestElementSquareDist))
 						{
@@ -4902,7 +4897,6 @@ void ccGLWindow::displayNewMessage(	const QString& message,
 		if (pos == SCREEN_CENTER_MESSAGE)
 		{
 			ccLog::Warning("[ccGLWindow::displayNewMessage] Append is not supported for center screen messages!");
-			append = false;
 		}
 	}
 
@@ -6523,34 +6517,31 @@ void ccGLWindow::renderText(int x, int y, const QString & str, const QFont & fon
 	assert(glFunc);
 
 	//compute the text bounding rect
-	QRect rect = QFontMetrics(font).boundingRect(str);
+	// This adjustment and the change to x & y are to work around a crash with Qt 5.9.
+	// At the time I (Andy) could not determine if it is a bug in CC or Qt.
+	//		https://bugreports.qt.io/browse/QTBUG-61863
+	//		https://github.com/CloudCompare/CloudCompare/issues/543
+	QRect rect = QFontMetrics(font).boundingRect(str).adjusted( -1, -2, 1, 2 );
+	
+	x -= 1;	// magic number!
+	y += 3;	// magic number!
 
 	//first we create a QImage from the text
-	//QRect textRect = rect;
-	//if (devicePixelRatio() > 1)
-	//{
-	//	textRect.setWidth(rect.width() + devicePixelRatio());
-	//	textRect.setHeight(rect.height() + devicePixelRatio());
-	//}
 	QImage textImage(rect.width(), rect.height(), QImage::Format::Format_RGBA8888);
+	rect = textImage.rect();
+	
+	textImage.fill(Qt::transparent);
 	{
 		QPainter painter(&textImage);
-		painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-		textImage.fill(Qt::transparent);
 
 		float glColor[4];
 		glFunc->glGetFloatv(GL_CURRENT_COLOR, glColor);
 		QColor color;
-		{
-			color.setRedF(glColor[0]);
-			color.setGreenF(glColor[1]);
-			color.setBlueF(glColor[2]);
-			color.setAlphaF(glColor[3]);
-		}
-		QPen pen(color);
-		painter.setPen(pen);
-		painter.setFont(font);
-		painter.drawText(-rect.x() - (devicePixelRatio() - 1) * 2, -rect.y() - (devicePixelRatio() - 1) * 2, str); //DGM: works (otherwise the rendered text is truncated)... but why?!
+		color.setRgbF( glColor[0], glColor[1], glColor[2], glColor[3] );
+		
+		painter.setPen( color );
+		painter.setFont( font );
+		painter.drawText( rect, Qt::AlignCenter, str );
 	}
 	
 	//and then we convert this QImage to a texture!
@@ -6572,7 +6563,9 @@ void ccGLWindow::renderText(int x, int y, const QString & str, const QFont & fon
 			glFunc->glTranslatef(x, m_glViewport.height() - 1 - y, 0);
 
 			glFunc->glEnable(GL_TEXTURE_2D);         
-			QOpenGLTexture textTex(textImage);
+			QOpenGLTexture textTex( textImage, QOpenGLTexture::DontGenerateMipMaps );
+			textTex.setMinificationFilter( QOpenGLTexture::Linear );
+			textTex.setMagnificationFilter( QOpenGLTexture::Linear );
 			textTex.bind();
 
 			glFunc->glColor4f(1.0f, 1.0f, 1.0f, 1.0f); //DGM: warning must be float colors to work properly?!
